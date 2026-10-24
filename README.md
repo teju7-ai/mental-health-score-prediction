@@ -2,6 +2,8 @@
 
 A student machine learning project that estimates a **DASS-42 stress score (0–42)** from ten personality responses, age and education.
 
+**Live app:** https://mental-health-score-prediction-fgviiu3nnslazg5sfm7fdt.streamlit.app/
+
 This is an educational prototype, not a diagnostic or clinically validated screening tool. It does not predict future mental health.
 
 ## Features
@@ -100,6 +102,8 @@ The app does not write user answers to a file or database. Answers are held in s
 - Python, pandas, NumPy, scikit-learn, Matplotlib, Seaborn, Streamlit and joblib
 
 ## Hosted app
+
+Live at https://mental-health-score-prediction-fgviiu3nnslazg5sfm7fdt.streamlit.app/
 
 The deployment includes the compressed trained model and exported evaluation charts.
 The raw dataset is not uploaded. Charts were checked against the saved test metrics before export.
