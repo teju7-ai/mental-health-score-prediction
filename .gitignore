@@ -1,0 +1,17 @@
+# Python environment and temporary files
+.venv/
+.venv312/
+__pycache__/
+*.pyc
+
+# Editor settings
+.idea/
+
+# Local datasets and trained models
+data/
+models/*.joblib
+
+# Secrets
+.env
+.env.*
+.streamlit/secrets.toml

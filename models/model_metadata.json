@@ -1,0 +1,48 @@
+{
+  "model": "RandomForestRegressor",
+  "target": "DASS-42 stress score",
+  "target_range": [
+    0,
+    42
+  ],
+  "features": [
+    "TIPI1",
+    "TIPI2",
+    "TIPI3",
+    "TIPI4",
+    "TIPI5",
+    "TIPI6",
+    "TIPI7",
+    "TIPI8",
+    "TIPI9",
+    "TIPI10",
+    "age",
+    "education"
+  ],
+  "development_rows": 31820,
+  "test_rows": 7955,
+  "random_state": 42,
+  "validation_metrics": {
+    "Mean baseline": {
+      "MAE": 8.730301772106692,
+      "RMSE": 10.438916508633659,
+      "R2": -5.226565509364178e-05
+    },
+    "Ridge regression": {
+      "MAE": 6.317339041913101,
+      "RMSE": 7.898140402356767,
+      "R2": 0.4275183778619579
+    },
+    "Random forest": {
+      "MAE": 6.084454226869322,
+      "RMSE": 7.648366917223174,
+      "R2": 0.4631545476354516
+    }
+  },
+  "test_metrics": {
+    "MAE": 6.058796519063762,
+    "RMSE": 7.607628971659507,
+    "R2": 0.4837555098543276
+  },
+  "intended_use": "Educational prototype, not clinical diagnosis"
+}
