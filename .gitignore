@@ -15,3 +15,5 @@ models/*.joblib
 .env
 .env.*
 .streamlit/secrets.toml
+# Include this trusted trained pipeline for hosting
+!models/stress_model.joblib

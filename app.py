@@ -335,71 +335,26 @@ def display_plot(fig):
 
 def performance_page():
     st.title("How well does the model work?")
-    st.write("These graphs show where the model does well and where it makes mistakes. They describe the project, not your personal mental health.")
-    if not METADATA_PATH.exists():
-        st.info("Train the model first to see the results.")
-        return
-    with METADATA_PATH.open(encoding="utf-8") as file:
-        metadata=json.load(file)
-
-    st.subheader("1. Which model made smaller mistakes?")
-    st.write("Shorter bars are better. The numbers show how many score points each prediction was wrong by, on average.")
-    results=metadata.get("validation_metrics", {})
-    if results:
-        names=list(results)
-        values=[results[name]["MAE"] for name in names]
-        fig,ax=plot_frame()
-        bars=ax.barh(names,values,color=["#778271" if name != "Random forest" else "#c5cfad" for name in names],height=.5)
-        ax.invert_yaxis()
-        ax.set_xlim(0,max(values)*1.22)
-        ax.set_xlabel("Average error in score points — lower is better")
-        for bar,value in zip(bars,values):
-            ax.text(value+.12,bar.get_y()+bar.get_height()/2,f"{value:.2f}",va="center",color="#eeeae1")
-        display_plot(fig)
-        st.caption("All models were compared on the same validation rows. These comparisons were used to select the model; they are separate from the final test results.")
-        st.write("The baseline always predicts the training average. Ridge learns a linear relationship. Random Forest combines many decision trees.")
-    else:
-        st.info("This saved model file does not include the comparison results.")
-
-    st.subheader("2. How close were the final predictions?")
-    st.write("Each dot represents a test response. The closer it is to the dotted line, the closer the prediction was to the actual survey score.")
-    path=PROJECT_FOLDER/"data"/"prepared_data.csv"
-    if not path.exists() or not MODEL_PATH.exists():
-        st.info("Keep data/prepared_data.csv and models/stress_model.joblib in your project to show the remaining graphs.")
-        go_button("Back to About", ABOUT_PAGE, "graphs_no_data")
-        return
-    try:
-        with st.spinner("Checking the saved test results..."):
-            test=test_plot_data(path.stat().st_mtime_ns,MODEL_PATH.stat().st_mtime_ns,METADATA_PATH.stat().st_mtime_ns)
-    except Exception as exc:
-        st.error("The test graphs could not be verified: " + str(exc))
-        st.caption("No replacement or made-up test data is displayed.")
-        return
-    sample=test.sample(n=min(1500,len(test)),random_state=42)
-    fig,ax=plot_frame()
-    ax.scatter(sample["Actual"],sample["Predicted"],s=12,alpha=.25,color="#c5cfad",edgecolors="none")
-    ax.plot([0,42],[0,42],linestyle="--",color="#d9ab7f",linewidth=1.5,label="Perfect prediction")
-    ax.set(xlim=(-1,43),ylim=(-1,43),xlabel="Actual survey score",ylabel="Predicted score")
-    ax.legend(facecolor="#292c27",labelcolor="#eeeae1")
-    display_plot(fig)
-    st.caption(f"Showing a fixed random sample of {len(sample):,} out of {len(test):,} test responses to reduce overlap. The line shows a perfect match, not a health threshold.")
-
-    st.subheader("3. Were predictions too high or too low?")
-    st.write("The middle line means no error. Bars to the left show predictions that were too low. Bars to the right show predictions that were too high.")
-    fig,ax=plot_frame()
-    ax.hist(test["Error"],bins=np.arange(-42,44,2),color="#a7b593",edgecolor="#1d1e1c")
-    ax.axvline(0,color="#d9ab7f",linestyle="--",linewidth=1.5)
-    ax.set(xlabel="Prediction minus actual score (points)",ylabel="Number of test responses")
-    display_plot(fig)
-    st.caption(f"Uses all {len(test):,} test responses. A concentration near zero means more predictions were close. Errors on opposite sides can cancel, so average error size is also important.")
-
-    st.subheader("4. Which scores were in the test data?")
-    st.write("This shows how often different actual stress scores occurred. It describes this survey sample; it is not a picture of everyone's mental health.")
-    fig,ax=plot_frame()
-    ax.hist(test["Actual"],bins=np.arange(-.5,43.5,1),color="#8d9f87",edgecolor="#1d1e1c")
-    ax.set(xlabel="Actual stress questionnaire score",ylabel="Number of test responses",xlim=(-1,43))
-    display_plot(fig)
-    st.caption("All charts use the original model and data. No model retraining takes place on this page.")
+    st.write("These graphs show the saved model's test results. They describe the project, not your personal mental health.")
+    charts = [
+        ("Which model made smaller mistakes?", "comparison.png",
+         "Shorter bars are better. These are average errors on the same validation data, used to choose the model."),
+        ("How close were the final predictions?", "predictions.png",
+         "Each dot is one test response. Dots closer to the dotted line mean better predictions. This is a fixed sample of up to 1,500 test responses."),
+        ("Were predictions too high or too low?", "errors.png",
+         "Zero means no error. Left of zero means the prediction was too low; right means it was too high. This uses all test responses."),
+        ("Which scores were in the test data?", "scores.png",
+         "Taller bars mean more responses with that score. This survey sample does not represent everyone.")
+    ]
+    for title, filename, explanation in charts:
+        st.subheader(title)
+        st.write(explanation)
+        path = PROJECT_FOLDER / "assets" / filename
+        if path.exists():
+            st.image(str(path), alt=title)
+        else:
+            st.warning("This graph file is missing from the deployment.")
+    st.caption("Charts were exported after checking the original held-out results against the model metadata. The hosted app does not need the raw dataset.")
     go_button("Back to About", ABOUT_PAGE, "graphs_back")
     go_button("Go to the questions", QUESTION_PAGE, "graphs_questions", True)
 

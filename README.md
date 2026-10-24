@@ -69,7 +69,7 @@ Download and extract the dataset into data as described above, then run:
 
 Open the local address printed by Streamlit. Keep the terminal running.
 
-The trained model is excluded from Git and must be generated after cloning. Load only trusted joblib files.
+The compressed trained model is included for deployment. Training scripts remain available to reproduce it. Load only trusted joblib files.
 
 ## Files
 
@@ -81,7 +81,7 @@ The trained model is excluded from Git and must be generated after cloning. Load
 - .streamlit/config.toml: theme configuration
 - models/model_metadata.json: saved model information and metrics
 - data/: local datasets, excluded from Git
-- models/stress_model.joblib: generated pipeline, excluded from Git
+- models/stress_model.joblib: compressed pipeline included for deployment
 
 ## Limitations and privacy
 
@@ -98,3 +98,10 @@ The app does not write user answers to a file or database. Answers are held in s
 - Personality items: Gosling, Rentfrow & Swann (2003), Ten-Item Personality Inventory
 - [Photograph by Simon Reza](https://unsplash.com/photos/lduDz1Ra0sY), under the [Unsplash License](https://unsplash.com/license)
 - Python, pandas, NumPy, scikit-learn, Matplotlib, Seaborn, Streamlit and joblib
+
+## Hosted app
+
+The deployment includes the compressed trained model and exported evaluation charts.
+The raw dataset is not uploaded. Charts were checked against the saved test metrics before export.
+To run the included app after installing requirements, run Streamlit directly; downloading data and training are only needed to reproduce the model.
+Use Python 3.14 in Streamlit Community Cloud advanced settings, branch main, entrypoint app.py.
